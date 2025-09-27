@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Insta content Downloader",
+  "version": "1.0",
+  "permissions": ["activeTab", "scripting","tabs","storage","nativeMessaging","downloads","cookies"],
+  "action": {
+    "default_popup": "popup.html"
+  }, "icons": {
+  "16": "insta.png",
+  "32": "insta.png",
+  "48": "insta.png",
+  "128": "insta.png"
+},
+  "content_scripts": [
+    {
+      "matches": ["*://*.instagram.com/*"],
+      "js": ["REELDOWNLOADER.js"]
+    },{
+      "matches": ["https://*.savefrom.net/*", "https://es.savefrom.net/*"],
+      "js": ["saveFrom.js"]
+    }
+
+  ],"background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },"minimum_chrome_version": "116"
+}
