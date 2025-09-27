@@ -61,6 +61,32 @@
         });
     }
 
+    async function canStopRetrieve(delay = 5000) {
+        return new Promise(resolve => {
 
+            const done = () => {
+                observer.disconnect();
+                resolve(true);
+            };
+
+            let timeout = setTimeout(done, delay);
+            const selector = 'div';
+
+            const observer = new MutationObserver(mutations => {
+                for (const m of mutations) {
+                    console.log(m)
+                    for (const n of m.addedNodes) {
+                        console.log(n)
+                        if (n.nodeType === 1 && (n.matches(selector) || n.querySelector(selector))) {
+                            clearTimeout(timeout);
+                            timeout = setTimeout(done, delay);
+                        }
+                    }
+                }
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    }
 
 })()
