@@ -2,20 +2,27 @@
 
     chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
 
-        if(request.action === 'dlReelsOnly'){
-
+        if(request.action === 'dlTikToks'){
+            await dlTikToks()
         }
 
     });
 
+    async function dlTikToks() {
 
+        //const existingFiles = getLocalDownloads()
 
-    function dlTikToks(){
+        setupSFTab()
+
+        const username = getCurrentUsername();
+        if(!username) return;
+
+        const tiktoksToDl = await getVidsInfoToDl();
+        if(!tiktoksToDl) return;
+
+        SFgetLinks({username,tiktoksToDl});
 
     }
-    //getAttributeNode("class").textContent.includes('VideoContainer')
-
-
 
     async function getVidsInfoToDl(existingFiles) {
         return new Promise(async (resolve) => {
@@ -87,6 +94,18 @@
 
             observer.observe(document.body, { childList: true, subtree: true });
         });
+    }
+
+    function SFgetLinks(data){
+        chrome.runtime.sendMessage({action:"addToQueue", data})
+    }
+
+    function setupSFTab(){
+        chrome.runtime.sendMessage({action:"setupSFTabs"})
+    }
+
+    function getCurrentUsername(){
+        return location.href.split("@")[1];
     }
 
 })()

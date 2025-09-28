@@ -153,7 +153,6 @@
     }
 
     function SFgetLinks(data){
-        console.log(data)
         chrome.runtime.sendMessage({action:"addToQueue", data})
     }
 
