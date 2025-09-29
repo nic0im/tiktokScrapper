@@ -1,2 +1,3 @@
 ﻿# tiktokScrapper
-This is still under development, isn't functional yet
+This is still under development.
+
