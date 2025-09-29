@@ -13,8 +13,8 @@
 },
   "content_scripts": [
     {
-      "matches": ["*://*.instagram.com/*"],
-      "js": ["REELDOWNLOADER.js"]
+      "matches": ["*://*.tiktok.com/*"],
+      "js": ["TIKTOK.js"]
     },{
       "matches": ["https://*.savefrom.net/*", "https://es.savefrom.net/*"],
       "js": ["saveFrom.js"]

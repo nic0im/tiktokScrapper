@@ -6,18 +6,19 @@
 
         if(request.action === 'processLink' ){
             console.log(request.linkInfo)
-            await dlReelByInstaLink(request.linkInfo)
+            await dlReelByInstaLink(request.linkInfo, request.username)
         }
     });
 
 
     let findDlBtnInterval
 
-    async function dlReelByInstaLink(linkInfo){
+    async function dlReelByInstaLink(linkInfo, username){
+
+        chrome.runtime.sendMessage({action: 'focusSF'})
 
         const fileUrl = linkInfo.url
         const fileName = linkInfo.fileName
-        const currentUsername = fileUrl.split("/")[3]
 
         let fillInputRes = await fillUrlInput(fileUrl)
         if(!fillInputRes) return
@@ -25,7 +26,7 @@
         let retrieveVidHrefRes = await retrieveVidHref(fileUrl)
         if(!retrieveVidHrefRes) return
 
-        dlReel(retrieveVidHrefRes,currentUsername,fileName)
+        dlReel(retrieveVidHrefRes,username,fileName)
 
     }
 
@@ -83,14 +84,14 @@
 
     function dlReel(url,currentUsername, fileName){
         chrome.runtime.sendMessage({action:'dlReelFromServiceWorker', url, filename: `instagram/${currentUsername}/${fileName}.mp4`})
-            chrome.runtime.sendMessage({action:'tabReady'})
+        chrome.runtime.sendMessage({action:'tabReady', currentUsername})
     }
 
-    function keepAlive(){
-        keepAliveInterval = setInterval(()=>{
-            chrome.runtime.sendMessage({action:'keepAlive'})
-        },5000)
-    }
-    keepAlive()
+    // function keepAlive(){
+    //     keepAliveInterval = setInterval(()=>{
+    //         chrome.runtime.sendMessage({action:'keepAlive'})
+    //     },5000)
+    // }
+    // keepAlive()
 
 })()

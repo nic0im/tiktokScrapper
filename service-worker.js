@@ -10,9 +10,11 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
     }else if(message.action === 'addToQueue'){
         addToQueue(message.data)
     }else if(message.action === 'tabReady'){
-        setAvailableTab(sender)
+        setAvailableTab(sender, message.currentUsername)
 
     }else if(message.action === 'focusIg'){
+        focusTabById(sender.tab.id)
+    }else if(message.action === 'focusSF'){
         focusTabById(sender.tab.id)
     }else if(message.action==='keepAlive'){
         console.log("keep-alive")
@@ -22,22 +24,22 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
 function addToQueue(data){
 
-    const queueVids = data.reelsToDL
+    const queueVids = data.tiktoksToDl
 
     availableTabs.forEach(tabId => {
         const linkInfo = queueVids.shift();
         if (linkInfo) {
-            chrome.tabs.sendMessage(tabId, { action: 'processLink', linkInfo });
+            chrome.tabs.sendMessage(tabId, { action: 'processLink', linkInfo, username: data.username });
         }
     });
 
-    if(data && data.reelsToDL && data.reelsToDL.length > 0){
+    if(data && data.tiktoksToDl && data.tiktoksToDl.length > 0){
         downloadQueue.push(...queueVids)
     }
 
 }
 
-function setAvailableTab(sender) {
+function setAvailableTab(sender, username) {
     const tabId = sender.tab.id;
 
     if (downloadQueue.length > 0) {
@@ -46,8 +48,9 @@ function setAvailableTab(sender) {
 
         function onDownloadChanged(downloadItem) {
             if (downloadItem.state && downloadItem.state.current === 'complete') {
-                chrome.tabs.sendMessage(tabId, { action: 'processLink', linkInfo });
-
+                setTimeout(()=>{
+                    chrome.tabs.sendMessage(tabId, { action: 'processLink', linkInfo, username });
+                },2000)
                 focusTabById(tabId);
                 chrome.downloads.onChanged.removeListener(onDownloadChanged);
             }
@@ -59,7 +62,7 @@ function setAvailableTab(sender) {
 
 async function setupSFTabs() {
     chrome.tabs.query({}, (tabs) => {
-        let targetTabs = tabs.filter(tab => tab.url === "https://es.savefrom.net/25-instagram-reels-download.html");
+        let targetTabs = tabs.filter(tab => tab.url === "https://es.savefrom.net/159dZ/download-from-tiktok");
 
         // Close extra tabs if there are 5 or more
         targetTabs.slice(1).forEach(tab => chrome.tabs.remove(tab.id));
@@ -69,7 +72,7 @@ async function setupSFTabs() {
         }
 
         while (targetTabs.length < 1) {
-            chrome.tabs.create({ url: "https://es.savefrom.net/25-instagram-reels-download.html" },(newTab)=>{
+            chrome.tabs.create({ url: "https://es.savefrom.net/159dZ/download-from-tiktok" },(newTab)=>{
                 availableTabs.push(newTab.id);
             });
             targetTabs.push({});

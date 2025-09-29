@@ -1,5 +1,6 @@
 (function() {
 
+    console.log("mounted ")
     chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
 
         if(request.action === 'dlTikToks'){
@@ -11,7 +12,6 @@
     async function dlTikToks() {
 
         //const existingFiles = getLocalDownloads()
-
         setupSFTab()
 
         const username = getCurrentUsername();
@@ -20,6 +20,7 @@
         const tiktoksToDl = await getVidsInfoToDl();
         if(!tiktoksToDl) return;
 
+        console.log(tiktoksToDl);
         SFgetLinks({username,tiktoksToDl});
 
     }

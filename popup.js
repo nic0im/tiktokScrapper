@@ -1,21 +1,15 @@
 
-document.getElementById('btnDlReelsOnly').addEventListener('click', function() {
+document.getElementById('btnDlTikToks').addEventListener('click', function() {
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         var activeTab = tabs[0];
-        chrome.tabs.sendMessage(activeTab.id, { action: 'dlReelsOnly' });
+        chrome.tabs.sendMessage(activeTab.id, { action: 'dlTikToks' });
 
     });
 });
 
-document.getElementById('resumeReelsDownloads').addEventListener('click', function() {
+document.getElementById('resumeTikToksDownloads').addEventListener('click', function() {
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         var activeTab = tabs[0];
-        chrome.tabs.sendMessage(activeTab.id, { action: 'resumeReelsDownloads' });
-    });
-});
-document.getElementById('tabTest').addEventListener('click', function() {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        var activeTab = tabs[0];
-        chrome.tabs.sendMessage(activeTab.id, { action: 'tabTest' });
+        chrome.tabs.sendMessage(activeTab.id, { action: 'resumeTikToksDownloads' });
     });
 });
